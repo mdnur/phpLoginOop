@@ -73,6 +73,7 @@ error_reporting(E_ALL);
                 </table>
             </div>
         </div>
+        
         <footer class="bg-gray-200 text-center p-5">
                 Develop by <a href="http://twitter.com/realmdnur" class="text-blue-500">Mohammad Nur</a>
         </footer>
