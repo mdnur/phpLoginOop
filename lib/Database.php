@@ -21,5 +21,19 @@ class Database
             }
         }
     }
+    public function insertForSignUp($name,$email,$username,$password){
+        $query = "INSERT INTO `tbl_users`(name, email, username ,password) VALUES (?,?,?,?)";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(1, $name);
+        $stmt->bindParam(2, $email);
+        $stmt->bindParam(3, $username);
+        $stmt->bindParam(4, $password);
+        if(!$stmt->execute()){
+            return false;
+        }
+
+        return true;
+
+    }
 
 }

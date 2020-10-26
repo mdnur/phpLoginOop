@@ -1,54 +1,89 @@
 <?php
-class validation
+class Validation
 {
     protected $data;
+    private $validate_data =[];
     protected $errors = [];
+    public static $fields =['name','email','username','password'];
+    private $user;
+
 
     public function __construct($data)
     {
+        $this->user = new User();
         $this->data = $data;
     }
 
-    
-    public static function validate($data)
+    public function validateForm()
     {
-        return new validation($data);
+       foreach (self::$fields as $field ) {
+         if(!array_key_exists($field,$this->data)){
+             trigger_error("$field are not present in data ");
+             return ;
+         }
+       }
+       $this->validateName();
+       $this->validateEmail();
+       $this->validateUsername();
+       $this->validatePassword();
+       return $this->errors;
     }
 
-    public  function is_empty(){
-        if(!isset($this->data['name'])){
-            $this->errors['name'] = "Name is required";
-        }elseif(!isset($this->data['email'])){
-            $this->errors['email'] = "Email is required";
-        }elseif(!isset($this->data['username'])){
-            $this->errors['username'] = "username is required";
-        }elseif(!isset($this->data['password'])){
-            $this->errors['password'] = "Password is required";
+    private function validateUsername(){
+        $val = htmlspecialchars(trim($this->data['username']));
+        if(empty($val)){
+            $this->addError('username',"Username can't be empty");
+        }else{
+            if(!preg_match('/^[a-zA-Z0-9]{3,}$/', $this->data['username'])){
+                $this->addError('username','username must be 3-12 chars and alpabatic');
+            }if($this->user->checkUsername($val)){
+                $this->addError('username',"Username already taken");
+            }
         }
-
-        if(count($this->errors) >0){
-            return false;
+        $this->validate_data['username'] =$val;
+      
+    }
+    private function validateName(){
+        $val = htmlspecialchars(trim($this->data['name']));
+        if(empty($val)){
+            $this->addError('name',"Name can't be empty");
+        }elseif(strlen($val) < 3){
+            $this->addError("name","Name should be have at least 3 char");
+        }elseif(!preg_match("/^[a-zA-Z]{3-20|$/",$this->data['name'])){
+            $this->addError('name','Name must use  only alpabatic');
         }
-        return $this;
+        $this->validate_data['name'] =$val;
     }
-
-    public function trim(){
-        foreach (array_keys($_POST) as $key_name ) {
-            $this->data[$key_name] = trim($this->data[$key_name]);
+    private function validateEmail(){
+        $val = htmlspecialchars(trim($this->data['email']));
+        if(empty($val)){
+            $this->addError('email',"Email can't be empty");
+        }elseif(!filter_var($this->data['email'], FILTER_VALIDATE_EMAIL)){
+            $this->addError('email',"Email not valided");
+        }elseif($this->user->checkEmail($val)){
+            $this->addError('email',"Email  already taken");
         }
-        return $this;
+        
+        $this->validate_data['email'] =$val;
     }
-
-    public  function filter_data(){
-        $this->data['name'] = filter_input(INPUT_POST, $this->data['name'], FILTER_SANITIZE_STRING);
-        $this->data['email'] = filter_var( filter_input( INPUT_POST, $this->data['email'], FILTER_SANITIZE_EMAIL ), FILTER_VALIDATE_EMAIL );
-        $this->data['username'] = filter_input(INPUT_POST, $this->data['username'], FILTER_SANITIZE_SPECIAL_CHARS);
-        $this->data['password'] = filter_input(INPUT_POST, $this->data['password'], FILTER_SANITIZE_SPECIAL_CHARS);
-        return $this;
+    private function validatePassword(){
+        $val = htmlspecialchars(trim($this->data['password']));
+        if(empty($val)){
+            $this->addError('password',"Password can't be empty");
+         }elseif(strlen($val) < 6){
+            $this->addError("password","Password is so short. minimum 6");
+        }
+        $this->validate_data['password'] =md5($val);
     }
-
+    private function addError($key,$message){
+        $this->errors[$key] = $message;
+    }
+    
     public function getData(){
-        return $this->data;
+        if($this->errors){
+            return ;
+        }
+        return $this->validate_data;
     }
 
 }

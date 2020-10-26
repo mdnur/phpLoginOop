@@ -1,16 +1,24 @@
 <?php include_once("inc/_header.php"); ?>
 <?php require_once("lib/User.php"); ?>
-<?php require_once("helper/Validation.php")?>
+<?php require_once("helper/Validation.php") ?>
 <?php
 error_reporting(E_ALL);
 
 $user = new User();
 
 if ($_SERVER["REQUEST_METHOD"] == 'POST') {
-    // validation::validate($_POST);
-    // print_r(array_keys($_POST));
-    $validate_data = validation::validate($_POST)->is_empty()->trim()->filter_data()->getdata();
-    $user->
+
+    $validation = new Validation($_POST);
+    $errors = $validation->validateForm();
+    if($errors == null){
+        if($user->signup($validation->getData())) {
+            echo "Success";
+            header('location:index.php');
+
+        }else{
+            echo 'somthing went wrongs';
+        }
+    }
 
 }
 
@@ -28,36 +36,39 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     <div class="block overflow-x-auto mx-6">
 
         <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" action="signup.php" method="POST">
-            name<div class="mb-4">
+            <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
                     Name
                 </label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="name" type="text" placeholder="name" name="name">
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="name" type="text" value="<?php echo $_POST['name'] ?? '' ?>"placeholder="name" name="name" >
+                <p class="text-red-500 text-xs italic"><?php echo $errors['name'] ?? '' ?> </p>
             </div>
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="email">
                     Email
                 </label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="text" placeholder="email" name="email">
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="email" type="text" value="<?php echo $_POST['email'] ?? '' ?>"placeholder="email" name="email">
+                <p class="text-red-500 text-xs italic"><?php echo $errors['email'] ?? '' ?> </p>
             </div>
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
                     Username
                 </label>
-                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Username" name="username">
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" value="<?php echo $_POST['username'] ?? '' ?>"placeholder="Username" name="username">
+                <p class="text-red-500 text-xs italic"><?php echo $errors['username'] ?? '' ?> </p>
             </div>
 
             <div class="mb-6">
                 <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
                     Password
                 </label>
-                <input class="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************" name="password">
-                <p class="text-red-500 text-xs italic">Please choose a password.</p>
+                <input class="shadow appearance-none border  rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" value="<?php echo $_POST['password'] ?? '' ?>"placeholder="******************" name="password">
+
+                <p class="text-red-500 text-xs italic"><?php echo $errors['password'] ?? '' ?> </p>
+
             </div>
             <div class="flex items-center justify-between">
-                <input type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-                    Sign up
+                <input type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" value="Sign up">
                 </input>
                 <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
                     Forgot Password?
