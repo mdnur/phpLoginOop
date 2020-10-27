@@ -86,14 +86,15 @@ class User{
         }
         return false;
     }
-    public function update($data)
+    public function update($data,$id)
     {
-        $query = "UPDATE tbl_users SET name=? , email=?,username=?,bio=?";
+        $query = "UPDATE tbl_users SET name=? , email=?,username=?,bio=? WHERE id=?";
         $stmt = $this->db->pdo->prepare($query);
         $stmt->bindParam(1,$data['name']);
         $stmt->bindParam(2,$data['email']);
         $stmt->bindParam(3,$data['username']);
         $stmt->bindParam(4,$data['bio']);
+        $stmt->bindParam(5,$id);
         if (!$stmt->execute()) {
             return false;
         }

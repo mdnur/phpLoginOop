@@ -49,7 +49,7 @@ $no = 1;
                     <td class="px-4 py-4"><?php echo($user['email']) ?></td>
                     <td class="px-4 py-4"><?php echo($user['username']) ?></td>
                     <td class="text-left py-4">
-                        <a href="#" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">View</a>
+                        <a href="view.php?id=<?php echo($user['id'])?>" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">View</a>
                     </td>
                 </tr>
                 <?php } ?>

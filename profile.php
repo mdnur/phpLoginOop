@@ -9,11 +9,10 @@ $user = new User();
 $getdata = $user->get(Session::get('id'));
 
 if ($_SERVER["REQUEST_METHOD"] == 'POST') {
-    var_dump($_POST);
     $validation = new ValidationProfile($_POST);
     $errors = $validation->validateForm();
     if ($errors == null) {
-        if ($user->update($validation->getData())) {
+        if ($user->update($validation->getData(),Session::get('id'))) {
             Session::set('success', "Profile updated sucessful");
         } else {
             echo 'somthing went wrongs';

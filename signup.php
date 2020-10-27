@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     if($errors == null){
         if($user->signup($validation->getData())) {
             echo "Success";
-            header('location:index.php');
+            header('location:signin.php');
 
         }else{
             echo 'somthing went wrongs';
