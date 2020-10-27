@@ -36,7 +36,7 @@ class Database
 
     }
     public function getUserDataByEmailAndPassword($email,$password){
-        $query = "SELECT name,email,username FROM `tbl_users` WHERE email=? and password=?";
+        $query = "SELECT id,name,email,username FROM `tbl_users` WHERE email=? and password=?";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(1,$email);
         $stmt->bindParam(2,$password);

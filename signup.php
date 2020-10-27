@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
 
                     <div class="md:flex items-center justify-end space-x-8 md:flex-1 lg:w-0">
                         <?php if(Session::itsLogin() ):?>
-                         <a href="#" class="whitespace-no-wrap text-base leading-6 font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900">
+                         <a href="profile.php" class="whitespace-no-wrap text-base leading-6 font-medium text-gray-500 hover:text-gray-900 focus:outline-none focus:text-gray-900">
                            Profile
                         </a>
                         <span class="inline-flex rounded-md shadow-sm">

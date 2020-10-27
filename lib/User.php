@@ -50,10 +50,53 @@ class User{
         return false;
     }
     public function all(){
-        $query ="SELECT name,email,username,bio FROM tbl_users";
+        $query ="SELECT id,name,email,username,bio FROM tbl_users";
         $stmt = $this->db->pdo->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $result;
+    }
+
+    public function get($id){
+        $query ="SELECT id,name,email,username,bio FROM tbl_users WHERE id=? ";
+        $stmt = $this->db->pdo->prepare($query);
+        $stmt->bindParam(1,$id);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        return $result;
+    }
+    public function checkUsernameForUpdate($oldUserName,$newUserName)
+    {
+        $stmt =$this->db->pdo->prepare("SELECT username FROM tbl_users WHERE username =? or username=?");
+        $stmt->bindParam(1,$oldUserName);
+        $stmt->bindParam(2,$newUserName);
+        $stmt->execute();
+        if($stmt->rowCount() >= 2){
+            return true;
+        }
+        return false;
+    }
+    public function checkEmailForUpdate($oldEmail,$newEmail){
+        $stmt =$this->db->pdo->prepare("SELECT email FROM tbl_users WHERE email =? or email=?");
+        $stmt->bindParam(1,$oldEmail);
+        $stmt->bindParam(2,$newEmail);
+        $stmt->execute();
+        if($stmt->rowCount() >= 2){
+            return true;
+        }
+        return false;
+    }
+    public function update($data)
+    {
+        $query = "UPDATE tbl_users SET name=? , email=?,username=?,bio=?";
+        $stmt = $this->db->pdo->prepare($query);
+        $stmt->bindParam(1,$data['name']);
+        $stmt->bindParam(2,$data['email']);
+        $stmt->bindParam(3,$data['username']);
+        $stmt->bindParam(4,$data['bio']);
+        if (!$stmt->execute()) {
+            return false;
+        }
+        return true;
     }
 }
