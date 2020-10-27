@@ -35,5 +35,16 @@ class Database
         return true;
 
     }
+    public function getUserDataByEmailAndPassword($email,$password){
+        $query = "SELECT name,email,username FROM `tbl_users` WHERE email=? and password=?";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(1,$email);
+        $stmt->bindParam(2,$password);
+        if(!$stmt->execute()){
+            return false;
+        }
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result;
+    }
 
 }
